@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/kirisanth-g/compare-coverage/issues"
   },
-  "homepage": "https://github.com/kirisanth-g/compare-coverage#readme"
+  "homepage": "https://github.com/kirisanth-g/compare-coverage#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0"
+  }
 }
