@@ -1,0 +1,24 @@
+name: "Compare Coverage"
+description: "Action that compares coverages in PRs against master"
+inputs:
+  path:
+    description: "Path (with filename) to coverage json file"
+    required: true
+  cmd:
+    description: "Command to generate coverage json file"
+    required: false
+    default: "all"
+  min_coverage:
+    description: "Minimum coverage you require"
+    required: true
+    default: "100"
+  max_diff:
+    description: "Maximum difference in coverage when compared to master"
+    required: false
+    default: "0"
+outputs:
+  time: # id of output
+    description: "The time we greeted you"
+runs:
+  using: "node12"
+  main: "index.js"

@@ -1,0 +1,20 @@
+{
+  "name": "compare-coverage",
+  "version": "1.0.0",
+  "description": "Action to compare coverage with master",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kirisanth-g/compare-coverage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kirisanth-g/compare-coverage/issues"
+  },
+  "homepage": "https://github.com/kirisanth-g/compare-coverage#readme"
+}
