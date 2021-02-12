@@ -11,12 +11,13 @@ async function main() {
 
   // TODO: Check path file exists
   console.log("Branches: ", currBranch, defaultBranch);
+  console.log(__dirname);
+  fs.readdirSync(".").forEach((file) => {
+    console.log(file);
+  });
 
   if (currBranch === defaultBranch) {
     console.log("On default branch");
-    fs.readdirSync(".").forEach((file) => {
-      console.log(file);
-    });
 
     await cacheDefaultCoverage(defaultBranch, path);
   } else {
