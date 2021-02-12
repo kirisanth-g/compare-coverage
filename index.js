@@ -1,6 +1,7 @@
 const core = require("@actions/core");
 const cache = require("@actions/cache");
 const fs = require("fs");
+const pathFn = require("path");
 
 const DEFAULT_FILENAME = "coverage-default.json";
 
@@ -65,7 +66,7 @@ async function testDiffCoverage(currCoverage, defaultBranch) {
 }
 
 function getCoverage(path) {
-  let rawdata = fs.readFileSync(path);
+  let rawdata = fs.readFileSync(pathFn.resolve(__dirname, path));
   let data = JSON.parse(rawdata);
   if (!data.hasOwnProperty("total")) {
     throw new Error(`${path} does not contain totals`);
