@@ -1,9 +1,8 @@
 const core = require("@actions/core");
 const cache = require("@actions/cache");
 const fs = require("fs");
-const pathFn = require("path");
 
-const DEFAULT_FILENAME = "coverage-default.json";
+const DEFAULT_FILENAME = "cc-coverage-default.json";
 
 async function main() {
   const currBranch = getBranchName();
@@ -12,10 +11,7 @@ async function main() {
 
   // TODO: Check path file exists
   console.log("Branches: ", currBranch, defaultBranch);
-  console.log(__dirname);
-  fs.readdirSync(".").forEach((file) => {
-    console.log(file);
-  });
+  console.log(process.env.GITHUB_REF);
 
   if (currBranch === defaultBranch) {
     console.log("On default branch");
@@ -57,7 +53,7 @@ async function testDiffCoverage(currCoverage, defaultBranch) {
   const maxDiff = core.getInput("max_diff");
   //   Retreieve deafult branch coverage file from cache
   const restoreKey = `coverage-${defaultBranch}-`;
-  await cache.restoreCache(paths, restoreKey, [restoreKey]);
+  await cache.restoreCache([DEFAULT_FILENAME], restoreKey, [restoreKey]);
   // Get Coverage from cached file
   const defaultCoverage = getCoverage(DEFAULT_FILENAME);
   console.log("Deafault Coverage: ", defaultCoverage);
@@ -66,7 +62,7 @@ async function testDiffCoverage(currCoverage, defaultBranch) {
 }
 
 function getCoverage(path) {
-  let rawdata = fs.readFileSync(pathFn.resolve(__dirname, path));
+  let rawdata = fs.readFileSync(path);
   let data = JSON.parse(rawdata);
   if (!data.hasOwnProperty("total")) {
     throw new Error(`${path} does not contain totals`);
