@@ -26,7 +26,7 @@ function getBranchName() {
 function getCacheKey() {
   const defaultBranch = core.getInput("default_branch");
   const hash = process.env.GITHUB_SHA;
-  return `coverage-${defaultBranch}`;
+  return `coverage-${defaultBranch}-${hash}`;
 }
 
 function getCacheRestoreKeys() {
@@ -102,9 +102,9 @@ async function testDiffCoverage(currCoverage) {
   const diff = currCoverage - defaultCoverage;
   core.info("Coverage Difference: ", diff);
   if (diff >= maxDiff) {
-    core.info(`Coverage difference higher than the minimum: ${minCoverage}`);
+    core.info(`Coverage difference higher than the minimum: ${maxDiff}`);
   } else {
-    core.error(`Coverage difference is lower than the minimum: ${minCoverage}`);
+    core.error(`Coverage difference is lower than the minimum: ${maxDiff}`);
   }
 }
 
