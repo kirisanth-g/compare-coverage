@@ -46,7 +46,7 @@ async function cacheDefaultCoverage(path) {
 
   const key = getCacheKey();
   const cacheId = await cache.saveCache([DEFAULT_FILENAME], key);
-  core.info(`Cache saved with key: ${primaryKey} @ ${cacheId}`);
+  core.info(`Cache saved with key: ${key} @ ${cacheId}`);
 }
 
 async function testCoverage(path) {
