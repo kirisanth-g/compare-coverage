@@ -119,9 +119,12 @@ function getCoverage(path) {
     return Number(data.total.percent_covered);
   }
 
+  console.log("totals: ", data.total);
+
   let totalSum = ["lines", "statements", "functions", "branches"]
     .map((i) => data.total[i].pct)
     .reduce((a, b) => a + b, 0);
+  console.log("sum: ", totalSum);
   const avgCoverage = totalSum / 4;
 
   return avgCoverage;
