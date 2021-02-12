@@ -10,6 +10,7 @@ async function main() {
   const path = core.getInput("path");
 
   // TODO: Check path file exists
+  console.log("Branches: ", currBranch, defaultBranch);
 
   if (currBranch === defaultBranch) {
     console.log("On default branch");
