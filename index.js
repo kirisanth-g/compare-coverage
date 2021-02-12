@@ -96,7 +96,7 @@ async function testDiffCoverage(currCoverage) {
 
   // Get Coverage from cached file
   const defaultCoverage = getCoverage(DEFAULT_FILENAME);
-  core.info("Deafault Coverage: ", defaultCoverage);
+  core.info("Default Coverage: ", defaultCoverage);
 
   // Compare the difference
   const diff = currCoverage - defaultCoverage;
@@ -119,7 +119,7 @@ function getCoverage(path) {
     return Number(data.total.percent_covered);
   }
 
-  const totalSum = ["lines", "statements", "functions", "branches"]
+  let totalSum = ["lines", "statements", "functions", "branches"]
     .map((i) => data.total[i].pct)
     .reduce((a, b) => a + b, 0);
   const avgCoverage = totalSum / 4;
