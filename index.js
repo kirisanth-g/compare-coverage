@@ -78,7 +78,11 @@ async function testDiffCoverage(currCoverage) {
       ", "
     )}`
   );
-  const cacheKey = await cache.restoreCache(["."], primaryKey, restoreKeys);
+  const cacheKey = await cache.restoreCache(
+    [DEFAULT_FILENAME],
+    primaryKey,
+    restoreKeys
+  );
   if (!cacheKey) {
     core.info("Cache not found for input keys");
     return;
