@@ -12,7 +12,7 @@ async function main() {
   // TODO: Check path file exists
   if (currBranch === defaultBranch) {
     core.info(`On default branch (${defaultBranch}): Caching coverage report`);
-    await cacheDefaultCoverage(defaultBranch, path);
+    await cacheDefaultCoverage(path);
   } else {
     core.info(`On ${currBranch}: Testing Coverage against ${defaultBranch}`);
     await testCoverage(path);
@@ -34,7 +34,7 @@ function getCacheRestoreKeys() {
   return [`coverage-${defaultBranch}-`];
 }
 
-async function cacheDefaultCoverage(defaultBranch, path) {
+async function cacheDefaultCoverage(path) {
   fs.readdirSync(".").forEach((file) => {
     core.info(file);
   });
@@ -45,7 +45,8 @@ async function cacheDefaultCoverage(defaultBranch, path) {
   });
 
   const key = getCacheKey();
-  await cache.saveCache([DEFAULT_FILENAME], key);
+  const cacheId = await cache.saveCache([DEFAULT_FILENAME], key);
+  core.info(`Cache saved with key: ${primaryKey} @ ${cacheId}`);
 }
 
 async function testCoverage(path) {
@@ -70,9 +71,9 @@ function testMinCoverage(currCoverage) {
 async function testDiffCoverage(currCoverage) {
   const maxDiff = core.getInput("max_diff");
   //   Retreieve deafult branch coverage file from cache
-  const key = getCacheKey();
+  const primaryKey = getCacheKey();
   const restoreKeys = getCacheRestoreKeys();
-  const cacheKey = await cache.restoreCache(["."], key, restoreKeys);
+  const cacheKey = await cache.restoreCache(["."], primaryKey, restoreKeys);
   if (!cacheKey) {
     core.info("Cache not found for input keys");
     return;
