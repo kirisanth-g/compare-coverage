@@ -1,2 +1,3 @@
 # compare-coverage
-Action to compare coverage with master
+
+Action to compare coverage with default branch

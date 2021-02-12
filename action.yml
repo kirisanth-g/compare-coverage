@@ -1,5 +1,5 @@
 name: "Compare Coverage"
-description: "Action that compares coverages in PRs against master"
+description: "Action that compares coverages in PRs against default branch"
 inputs:
   path:
     description: "Path (with filename) to coverage json file"
@@ -16,6 +16,10 @@ inputs:
     description: "Maximum difference in coverage when compared to master"
     required: false
     default: "0"
+  default_branch:
+    description: "Default branch to compare to"
+    required: false
+    default: "main"
 outputs:
   time: # id of output
     description: "The time we greeted you"
