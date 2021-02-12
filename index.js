@@ -26,7 +26,7 @@ function getBranchName() {
 function getCacheKey() {
   const defaultBranch = core.getInput("default_branch");
   const hash = process.env.GITHUB_SHA;
-  return `coverage-${defaultBranch}-${hash}`;
+  return `coverage-${defaultBranch}`;
 }
 
 function getCacheRestoreKeys() {
