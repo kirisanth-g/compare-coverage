@@ -23,10 +23,7 @@ async function main() {
 }
 
 function getBranchName() {
-  core.exportVariable(
-    "BRANCH_NAME",
-    process.env.GITHUB_REF.split("/").slice(2).join("/")
-  );
+  return process.env.GITHUB_REF.split("/").slice(2).join("/");
 }
 
 async function cacheDefaultCoverage(defaultBranch, path) {
