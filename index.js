@@ -26,8 +26,14 @@ function getBranchName() {
 }
 
 async function cacheDefaultCoverage(defaultBranch, path) {
+  fs.readdirSync(".").forEach((file) => {
+    console.log(file);
+  });
   // TODO check if this works?
   fs.renameSync(path, DEFAULT_FILENAME);
+  fs.readdirSync(".").forEach((file) => {
+    console.log(file);
+  });
   const hash = process.env.GITHUB_SHA;
   const key = `coverage-${defaultBranch}-${hash}`;
   await cache.saveCache([DEFAULT_FILENAME], key);
