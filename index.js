@@ -14,6 +14,10 @@ async function main() {
 
   if (currBranch === defaultBranch) {
     console.log("On default branch");
+    fs.readdirSync(".").forEach((file) => {
+      console.log(file);
+    });
+
     await cacheDefaultCoverage(defaultBranch, path);
   } else {
     await testCoverage(defaultBranch, path);
