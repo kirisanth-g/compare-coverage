@@ -62,7 +62,13 @@ async function testDiffCoverage(currCoverage, defaultBranch) {
   const maxDiff = core.getInput("max_diff");
   //   Retreieve deafult branch coverage file from cache
   const restoreKey = `coverage-${defaultBranch}-`;
-  await cache.restoreCache(["."], restoreKey, [restoreKey]);
+  const cacheKey = await cache.restoreCache(["."], restoreKey, [restoreKey]);
+  if (!cacheKey) {
+    core.info("Cache not found for input keys");
+    return;
+  } else {
+    core.info("Cache found for input keys");
+  }
 
   fs.readdirSync(".").forEach((file) => {
     console.log(file);
