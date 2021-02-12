@@ -11,10 +11,10 @@ async function main() {
 
   // TODO: Check path file exists
   if (currBranch === defaultBranch) {
-    core.log(`On default branch (${defaultBranch}): Caching coverage report`);
+    core.info(`On default branch (${defaultBranch}): Caching coverage report`);
     await cacheDefaultCoverage(defaultBranch, path);
   } else {
-    core.log(`On ${currBranch}: Testing Coverage against ${defaultBranch}`);
+    core.info(`On ${currBranch}: Testing Coverage against ${defaultBranch}`);
     await testCoverage(path);
   }
 }
@@ -36,12 +36,12 @@ function getCacheRestoreKeys() {
 
 async function cacheDefaultCoverage(defaultBranch, path) {
   fs.readdirSync(".").forEach((file) => {
-    core.log(file);
+    core.info(file);
   });
   // TODO check if this works?
   fs.renameSync(path, DEFAULT_FILENAME);
   fs.readdirSync(".").forEach((file) => {
-    core.log(file);
+    core.info(file);
   });
 
   const key = getCacheKey();
@@ -50,7 +50,7 @@ async function cacheDefaultCoverage(defaultBranch, path) {
 
 async function testCoverage(path) {
   const currCoverage = getCoverage(path);
-  core.log("Current Coverage: ", currCoverage);
+  core.info("Current Coverage: ", currCoverage);
 
   testMinCoverage(currCoverage);
   await testDiffCoverage(currCoverage);
@@ -59,7 +59,7 @@ async function testCoverage(path) {
 function testMinCoverage(currCoverage) {
   const minCoverage = core.getInput("min_coverage");
   if (currCoverage >= minCoverage) {
-    core.log(`Coverage meets the minimum requirement of ${minCoverage}`);
+    core.info(`Coverage meets the minimum requirement of ${minCoverage}`);
   } else {
     core.error(
       `Coverage is lower than the required percentage of ${minCoverage}`
@@ -81,18 +81,18 @@ async function testDiffCoverage(currCoverage) {
   }
 
   fs.readdirSync(".").forEach((file) => {
-    core.log(file);
+    core.info(file);
   });
 
   // Get Coverage from cached file
   const defaultCoverage = getCoverage(DEFAULT_FILENAME);
-  core.log("Deafault Coverage: ", defaultCoverage);
+  core.info("Deafault Coverage: ", defaultCoverage);
 
   // Compare the difference
   const diff = currCoverage - defaultCoverage;
-  core.log("Coverage Difference: ", diff);
+  core.info("Coverage Difference: ", diff);
   if (diff >= maxDiff) {
-    core.log(`Coverage difference higher than the minimum: ${minCoverage}`);
+    core.info(`Coverage difference higher than the minimum: ${minCoverage}`);
   } else {
     core.error(`Coverage difference is lower than the minimum: ${minCoverage}`);
   }
