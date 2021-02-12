@@ -10,14 +10,13 @@ async function main() {
   const path = core.getInput("path");
 
   // TODO: Check path file exists
-  console.log("Branches: ", currBranch, defaultBranch);
-  console.log(process.env.GITHUB_REF);
-
   if (currBranch === defaultBranch) {
-    console.log("On default branch");
-
+    console.log(
+      `On default branch (${defaultBranch}): Caching coverage report`
+    );
     await cacheDefaultCoverage(defaultBranch, path);
   } else {
+    console.log(`On ${currBranch}: Testing Coverage against ${defaultBranch}`);
     await testCoverage(defaultBranch, path);
   }
 }
@@ -36,14 +35,21 @@ async function cacheDefaultCoverage(defaultBranch, path) {
 
 async function testCoverage(defaultBranch, path) {
   const currCoverage = getCoverage(path);
-  console.log("Curr Coverage: ", currCoverage);
+  console.log("Current Coverage: ", currCoverage);
+
   testMinCoverage(currCoverage);
   await testDiffCoverage(currCoverage, defaultBranch);
 }
 
 function testMinCoverage(currCoverage) {
   const minCoverage = core.getInput("min_coverage");
-  return currCoverage >= minCoverage;
+  if (currCoverage >= minCoverage) {
+    console.log(`Coverage meets the minimum requirement of ${minCoverage}`);
+  } else {
+    console.error(
+      `Coverage is lower than the required percentage of ${minCoverage}`
+    );
+  }
 }
 
 async function testDiffCoverage(currCoverage, defaultBranch) {
@@ -51,11 +57,25 @@ async function testDiffCoverage(currCoverage, defaultBranch) {
   //   Retreieve deafult branch coverage file from cache
   const restoreKey = `coverage-${defaultBranch}-`;
   await cache.restoreCache([DEFAULT_FILENAME], restoreKey, [restoreKey]);
+
+  fs.readdirSync(".").forEach((file) => {
+    console.log(file);
+  });
+
   // Get Coverage from cached file
   const defaultCoverage = getCoverage(DEFAULT_FILENAME);
   console.log("Deafault Coverage: ", defaultCoverage);
+
   // Compare the difference
-  return currCoverage - defaultCoverage >= maxDiff;
+  const diff = currCoverage - defaultCoverage;
+  console.log("Coverage Difference: ", diff);
+  if (diff >= maxDiff) {
+    console.log(`Coverage difference higher than the minimum: ${minCoverage}`);
+  } else {
+    console.error(
+      `Coverage difference is lower than the minimum: ${minCoverage}`
+    );
+  }
 }
 
 function getCoverage(path) {
