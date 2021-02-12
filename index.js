@@ -73,6 +73,11 @@ async function testDiffCoverage(currCoverage) {
   //   Retreieve deafult branch coverage file from cache
   const primaryKey = getCacheKey();
   const restoreKeys = getCacheRestoreKeys();
+  core.info(
+    `Attempting restore cache with keys: ${[primaryKey, ...restoreKeys].join(
+      ", "
+    )}`
+  );
   const cacheKey = await cache.restoreCache(["."], primaryKey, restoreKeys);
   if (!cacheKey) {
     core.info("Cache not found for input keys");
