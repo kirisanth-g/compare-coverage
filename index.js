@@ -11,13 +11,11 @@ async function main() {
 
   // TODO: Check path file exists
   if (currBranch === defaultBranch) {
-    console.log(
-      `On default branch (${defaultBranch}): Caching coverage report`
-    );
+    core.log(`On default branch (${defaultBranch}): Caching coverage report`);
     await cacheDefaultCoverage(defaultBranch, path);
   } else {
-    console.log(`On ${currBranch}: Testing Coverage against ${defaultBranch}`);
-    await testCoverage(defaultBranch, path);
+    core.log(`On ${currBranch}: Testing Coverage against ${defaultBranch}`);
+    await testCoverage(path);
   }
 }
 
@@ -25,44 +23,56 @@ function getBranchName() {
   return process.env.GITHUB_REF.split("/").slice(2).join("/");
 }
 
+function getCacheKey() {
+  const defaultBranch = core.getInput("default_branch");
+  const hash = process.env.GITHUB_SHA;
+  return `coverage-${defaultBranch}-${hash}`;
+}
+
+function getCacheRestoreKeys() {
+  const defaultBranch = core.getInput("default_branch");
+  return [`coverage-${defaultBranch}-`];
+}
+
 async function cacheDefaultCoverage(defaultBranch, path) {
   fs.readdirSync(".").forEach((file) => {
-    console.log(file);
+    core.log(file);
   });
   // TODO check if this works?
   fs.renameSync(path, DEFAULT_FILENAME);
   fs.readdirSync(".").forEach((file) => {
-    console.log(file);
+    core.log(file);
   });
-  const hash = process.env.GITHUB_SHA;
-  const key = `coverage-${defaultBranch}-${hash}`;
+
+  const key = getCacheKey();
   await cache.saveCache([DEFAULT_FILENAME], key);
 }
 
-async function testCoverage(defaultBranch, path) {
+async function testCoverage(path) {
   const currCoverage = getCoverage(path);
-  console.log("Current Coverage: ", currCoverage);
+  core.log("Current Coverage: ", currCoverage);
 
   testMinCoverage(currCoverage);
-  await testDiffCoverage(currCoverage, defaultBranch);
+  await testDiffCoverage(currCoverage);
 }
 
 function testMinCoverage(currCoverage) {
   const minCoverage = core.getInput("min_coverage");
   if (currCoverage >= minCoverage) {
-    console.log(`Coverage meets the minimum requirement of ${minCoverage}`);
+    core.log(`Coverage meets the minimum requirement of ${minCoverage}`);
   } else {
-    console.error(
+    core.error(
       `Coverage is lower than the required percentage of ${minCoverage}`
     );
   }
 }
 
-async function testDiffCoverage(currCoverage, defaultBranch) {
+async function testDiffCoverage(currCoverage) {
   const maxDiff = core.getInput("max_diff");
   //   Retreieve deafult branch coverage file from cache
-  const restoreKey = `coverage-${defaultBranch}-`;
-  const cacheKey = await cache.restoreCache(["."], restoreKey, [restoreKey]);
+  const key = getCacheKey();
+  const restoreKeys = getCacheRestoreKeys();
+  const cacheKey = await cache.restoreCache(["."], key, restoreKeys);
   if (!cacheKey) {
     core.info("Cache not found for input keys");
     return;
@@ -71,22 +81,20 @@ async function testDiffCoverage(currCoverage, defaultBranch) {
   }
 
   fs.readdirSync(".").forEach((file) => {
-    console.log(file);
+    core.log(file);
   });
 
   // Get Coverage from cached file
   const defaultCoverage = getCoverage(DEFAULT_FILENAME);
-  console.log("Deafault Coverage: ", defaultCoverage);
+  core.log("Deafault Coverage: ", defaultCoverage);
 
   // Compare the difference
   const diff = currCoverage - defaultCoverage;
-  console.log("Coverage Difference: ", diff);
+  core.log("Coverage Difference: ", diff);
   if (diff >= maxDiff) {
-    console.log(`Coverage difference higher than the minimum: ${minCoverage}`);
+    core.log(`Coverage difference higher than the minimum: ${minCoverage}`);
   } else {
-    console.error(
-      `Coverage difference is lower than the minimum: ${minCoverage}`
-    );
+    core.error(`Coverage difference is lower than the minimum: ${minCoverage}`);
   }
 }
 
@@ -111,5 +119,5 @@ function getCoverage(path) {
 
 main().catch((e) => {
   process.exitCode = 1;
-  console.error(e);
+  core.error(e);
 });
