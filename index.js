@@ -51,7 +51,7 @@ async function cacheDefaultCoverage(path) {
 
 async function testCoverage(path) {
   const currCoverage = getCoverage(path);
-  core.info("Current Coverage: ", currCoverage);
+  core.info(`Current Coverage: ${currCoverage}`);
 
   testMinCoverage(currCoverage);
   await testDiffCoverage(currCoverage);
