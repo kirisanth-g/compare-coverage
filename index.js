@@ -96,11 +96,11 @@ async function testDiffCoverage(currCoverage) {
 
   // Get Coverage from cached file
   const defaultCoverage = getCoverage(DEFAULT_FILENAME);
-  core.info("Default Coverage: ", defaultCoverage);
+  core.info(`Default Coverage: ${defaultCoverage}`);
 
   // Compare the difference
   const diff = currCoverage - defaultCoverage;
-  core.info("Coverage Difference: ", diff);
+  core.info(`Coverage Difference: ${diff}`);
   if (diff >= maxDiff) {
     core.info(`Coverage difference higher than the minimum: ${maxDiff}`);
   } else {
